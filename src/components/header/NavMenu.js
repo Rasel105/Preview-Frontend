@@ -22,6 +22,9 @@ const Navbar = () => {
                             <li>
                                 <NavLink to="/dashboard" className="my-1" style={({ isActive }) => isActive ? activeStyle : undefined}>Home</NavLink>
                             </li>
+                            <li>
+                                <NavLink to="/Preview" className="my-1" style={({ isActive }) => isActive ? activeStyle : undefined}>Preview</NavLink>
+                            </li>
 
                         </ul>
                     </div>
