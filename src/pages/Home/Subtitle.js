@@ -1,9 +1,14 @@
 import React from 'react';
 
-const Subtitle = () => {
+const Subtitle = (props) => {
+    const { setting } = props.data;
+    const userData = props.userData;
+    console.log(userData);
+
     return (
         <div>
-            <h1>This is Subtitle</h1>
+            <h1 className='text-2xl mb-3' style={{ fontFamily: setting.customCSS.fontFamily, fontSize: setting.customCSS.fontSize, textAlign: setting.customCSS.textAlign }}>Company: {setting?.customCSS.text ? setting?.customCSS.text : userData?.company}</h1>
+            <h1 className='text-2xl mb-3'>Status: {userData?.status}</h1>
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useState } from 'react';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { PopupContext } from '../../App';
 import Preview from './Preview';
@@ -7,15 +7,43 @@ import {
     AccordionHeader,
     AccordionBody,
 } from "@material-tailwind/react";
+import { getPreviewDataById, postPreviewSchema } from '../../services/preview.services';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import auth from '../../init.firebase';
 
 const MainPreview = () => {
     const { id } = useParams();
-    const popup = useContext(PopupContext);
+    const [allValues, setAllValues] = useContext(PopupContext);
     const [open, setOpen] = useState(1);
+    const [allData, setPreviewData] = useState()
+    const [user, loading, error] = useAuthState(auth);
+
+    const email = user?.email;
 
     const handleOpen = (value) => {
         setOpen(open === value ? 0 : value);
     };
+
+    useEffect(() => {
+        previewData(id);
+    }, [id]);
+
+    const previewData = async (id) => {
+        try {
+            const res = await getPreviewDataById(id);
+            if (res) {
+                setPreviewData(res.data.data);
+            }
+        } catch (error) {
+            return error;
+        }
+    };
+
+    const postPreviewData = () => {
+        postPreviewSchema({ allValues, email })
+    }
+
+    console.log(allValues);
     const textAlign
         = [
             {
@@ -64,8 +92,33 @@ const MainPreview = () => {
             value: '3rem',
             label: 'extra large',
         },
-
     ];
+
+
+
+    const handlePopupChange = (e, type, property) => {
+        const value = e.target.value;
+        console.log(value);
+        const tempPopupValues = [...allValues.sections];
+        const index = tempPopupValues.findIndex(item => item.type === type);
+
+        if (index !== -1) {
+            tempPopupValues[index] = {
+                ...tempPopupValues[index],
+                setting: {
+                    ...tempPopupValues[index].setting,
+                    customCSS: {
+                        ...tempPopupValues[index].setting.customCSS,
+                        [property]: value
+                    }
+                }
+            }
+        }
+        setAllValues({ ...allValues, sections: tempPopupValues });
+    }
+
+
+
     return (
         <div className='grid grid-cols-2 gap-8 mt-28'>
             {/* left  */}
@@ -76,38 +129,76 @@ const MainPreview = () => {
                     </AccordionHeader>
                     <AccordionBody>
                         <div className='grid grid-cols-2 gap-4 mb-4'>
-                            <select className="select select-info">
+                            <select onChange={(e) => handlePopupChange(e, "title", "fontFamily")} className="select select-info">
                                 <option disabled selected>Font Family</option>
                                 {fontFamily.map(font => <option>{font.value}</option>)}
                             </select>
-                            <select className="select select-info">
+                            <select onChange={(e) => handlePopupChange(e, "title", "fontSize")} className="select select-info">
                                 <option disabled selected>Font Size</option>
                                 {fontSize.map(size => <option>{size.value}</option>)}
                             </select>
                         </div>
                         <div className='grid grid-cols-2 gap-4'>
-                            <select className="select select-info">
+                            <select onChange={(e) => handlePopupChange(e, "title", "textAlign")} className="select select-info">
+                                <option disabled selected>Alignment</option>
+                                {textAlign.map(align => <option>{align.label}</option>)}
+                            </select>
+                        </div>
+                        <textarea onChange={(e) => handlePopupChange(e, "title", "text")} className="textarea textarea-success w-full mt-2" placeholder="Bio"></textarea>
+                    </AccordionBody>
+                </Accordion>
+                <Accordion open={open === 1}>
+                    <AccordionHeader onClick={() => handleOpen(1)}>
+                        Subtitle
+                    </AccordionHeader>
+                    <AccordionBody>
+                        <div className='grid grid-cols-2 gap-4 mb-4'>
+                            <select onChange={(e) => handlePopupChange(e, "subtitle", "fontFamily")} className="select select-info">
+                                <option disabled selected>Font Family</option>
+                                {fontFamily.map(font => <option>{font.value}</option>)}
+                            </select>
+                            <select onChange={(e) => handlePopupChange(e, "subtitle", "fontSize")} className="select select-info">
                                 <option disabled selected>Font Size</option>
+                                {fontSize.map(size => <option>{size.value}</option>)}
+                            </select>
+                        </div>
+                        <div className='grid grid-cols-2 gap-4'>
+                            <select onChange={(e) => handlePopupChange(e, "subtitle", "textAlign")} className="select select-info">
+                                <option disabled selected>Alignment</option>
+                                {textAlign.map(align => <option>{align.label}</option>)}
+                            </select>
+                        </div>
+                        <textarea onChange={(e) => handlePopupChange(e, "subtitle", "text")} className="textarea textarea-success w-full mt-2" placeholder="Bio"></textarea>
+                    </AccordionBody>
+                </Accordion>
+                <Accordion open={open === 1}>
+                    <AccordionHeader onClick={() => handleOpen(1)}>
+                        Button
+                    </AccordionHeader>
+                    <AccordionBody>
+                        <div className='grid grid-cols-2 gap-4 mb-4'>
+                            <div>
+                                <label htmlFor="">Color</label>
+                                <input onChange={(e) => handlePopupChange(e, "button", "color")} type="color" name="" id="" />
+                            </div>
+                            <select onChange={(e) => handlePopupChange(e, "button", "textAlign")} className="select select-info">
+                                <option disabled selected>Alignnment</option>
                                 {textAlign.map(align => <option>{align.value}</option>)}
                             </select>
                         </div>
-                        <textarea className="textarea textarea-success w-full mt-2" placeholder="Bio"></textarea>
                     </AccordionBody>
                 </Accordion>
             </div>
             {/* right  */}
             <div>
-                <div className="card w-3/4 bg-base-100 shadow-xl p-3">
+                <div className='flex justify-end pr-8'>
+                    <button onClick={postPreviewData} className="btn">Save</button>
+                </div>
+                <div className="card w-auto bg-base-100 shadow-xl p-5">
                     <div className='mb-2'>
                         {
-                            popup[0]?.sections.map(data => <Preview data={data} />)
+                            allValues?.sections.map(data => <Preview allData={allData} data={data} />)
                         }
-                    </div>
-                    <div className='mb-2'>
-                        <input type="text" placeholder="Type here" className="input input-bordered input-accent w-full" />
-                    </div>
-                    <div>
-                        <button className="btn btn-wide">Created</button>
                     </div>
                 </div>
             </div>

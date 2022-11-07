@@ -11,7 +11,7 @@ const PreviewCard = ({ data }) => {
     }
 
     return (
-        <div className="card w-96 bg-base-100 shadow-xl">
+        <div className="card w-96 bg-base-100 shadow-xl p-3">
             <div className="card-body">
                 <h2 className="card-title">Name: {name}</h2>
                 <h2 className="card-title">Company: {company}</h2>
@@ -19,7 +19,7 @@ const PreviewCard = ({ data }) => {
                 <h2 className="card-title">status: {status}</h2>
                 <p>Description: {description}</p>
                 <div className="card-actions justify-center">
-                    <button onClick={() => createPreview(_id)} className="btn btn-primary">Create</button>
+                    <button  onClick={() => createPreview(_id)} className="btn btn-primary">Create</button>
                 </div>
             </div>
         </div>

@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
 import { useSendPasswordResetEmail, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BsEnvelope, BsKey } from 'react-icons/bs';
 import SocialLogin from './SocialLogin';
-// import auth from '../../../init.firebase';
-
+import auth from '../../init.firebase';
+import Loading from './Loading';
 
 const Login = () => {
     // take user data 
@@ -13,43 +13,43 @@ const Login = () => {
     const navigate = useNavigate();
 
     // firebase function 
-    // const [
-    //     signInWithEmailAndPassword,
-    //     user,
-    //     loading,
-    //     error,
-    // ] = useSignInWithEmailAndPassword(auth);
+    const [
+        signInWithEmailAndPassword,
+        user,
+        loading,
+        error,
+    ] = useSignInWithEmailAndPassword(auth);
 
-    // email Varification 
-    // const [sendPasswordResetEmail, sending] = useSendPasswordResetEmail(auth);
+    // email Varification
+    const [sendPasswordResetEmail, sending] = useSendPasswordResetEmail(auth);
 
     // loading here
-    // if (loading) {
-    //     // return <Loading />
-    // }
+    if (loading) {
+        return <Loading />
+    }
 
-    // if (user) {
-    //     navigate("/");
-    // }
+    if (user) {
+        navigate("/");
+    }
     // Login Form Submit 
     const handleLoginSubmit = e => {
         e.preventDefault();
-        // const email = emailRef.current.value;
-        // const password = passwordRef.current.value;
-        // signInWithEmailAndPassword(email, password);
+        const email = emailRef.current.value;
+        const password = passwordRef.current.value;
+        signInWithEmailAndPassword(email, password);
     }
 
     // error showing 
-    // let errorElement;
-    // if (error) {
-    //     errorElement = <p className='text-danger'>Error: {error?.message}</p>
-    // }
+    let errorElement;
+    if (error) {
+        errorElement = <p className='text-danger'>Error: {error?.message}</p>
+    }
 
     // forget password function
     const hanleForgetPassword = async () => {
         const email = emailRef.current.value;
         if (email) {
-            // await sendPasswordResetEmail(email);
+            await sendPasswordResetEmail(email);
             console.log("Sent email");
         }
         else {
@@ -79,7 +79,9 @@ const Login = () => {
                         <button type='submit' className='btn btn-primary w-full my-2 font-bold text-white text-lg'>Login</button>
                     </div>
                 </form>
-
+                <div>
+                    <h1>Don't have an account? <Link to='/register'><span className='text-blue-500'>Register</span></Link></h1>
+                </div>
                 {/* divider and google login */}
                 <div className='w-full md:w-96'>
                     <div className="flex justify-center items-center my-5">

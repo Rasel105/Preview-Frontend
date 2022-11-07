@@ -1,12 +1,32 @@
+import { signOut } from 'firebase/auth';
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.svg'
+import auth from '../../init.firebase';
+import Loading from '../../pages/other/Loading';
 
 const Navbar = () => {
+    const [user, loading, error] = useAuthState(auth);
+    const navigate = useNavigate();
+
     // Active route styles 
     let activeStyle = {
         borderBottom: '2px solid #F99A2C'
     };
+
+    if (error) {
+        return <p>Error</p>
+    }
+    if (loading) {
+        return <Loading />
+    }
+
+    const logout = () => {
+        signOut(auth);
+        navigate("/")
+    };
+
 
     return (
         <nav className="fixed top-0 shadow-lg w-full bg-white z-50 bg-opacity-30 backdrop-blur-lg">
@@ -49,8 +69,7 @@ const Navbar = () => {
 
                 {/* navbar right start */}
                 <div className="navbar-end">
-                    <Link to="/login" className="btn btn-primary border-primary font-bold">Login</Link>
-                    <Link to="/register" className="btn ml-2 btn-secondary btn-outline btn-base-100 font-bold">Register</Link>
+                    {user ? <button onClick={logout} className="btn btn-outline btn-info">Logout</button> : <Link to="/login" className="btn btn-primary border-primary font-bold">Login</Link>}
                 </div>
 
                 {/* navbar right end */}

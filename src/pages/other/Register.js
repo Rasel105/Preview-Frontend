@@ -1,10 +1,9 @@
 import React, { useRef } from 'react';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { BsEnvelope, BsKey, BsPerson } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
-// import registerVehicle from '../../assets/register-vehicle.png';
-// import Loading from '../../components/Shared/Loading';
-// import auth from '../../firebase.init';
+import { Link, useNavigate } from 'react-router-dom';
+import auth from '../../init.firebase';
+import Loading from './Loading';
 import SocialLogin from './SocialLogin';
 
 
@@ -21,11 +20,11 @@ const Register = () => {
         user,
         loading,
         error,
-    ] = useCreateUserWithEmailAndPassword();
+    ] = useCreateUserWithEmailAndPassword(auth);
 
-    // if (loading) {
-    //     return <Loading />
-    // }
+    if (loading) {
+        return <Loading />
+    }
 
     if (user) {
         navigate('/')
@@ -83,6 +82,9 @@ const Register = () => {
                         <button type='submit' className='btn btn-primary w-full my-2 font-bold text-white text-lg'>Register</button>
                     </div>
                 </form>
+                <div>
+                    <h1>Don't have an account? <Link to='/login'><span className='text-blue-500'>Login</span></Link></h1>
+                </div>
 
                 {/* divider and google login */}
                 <div className='w-full md:w-96'>
