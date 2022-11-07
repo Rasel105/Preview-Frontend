@@ -27,17 +27,10 @@ const PreviewList = () => {
     };
 
     return (
-        <div >
-
-            <div>
-                {
-                    previewData?.lenth > 0 ? <div className='grid grid-cols-3'>
-                        {
-                            previewData?.map(data => <SinglePreviewList key={data._id} data={data} previewData={previewData} />)
-                        }
-                    </div> : <div className='mt-20 flex justify-center'><img src={notFound} alt="" /></div>
-                }
-            </div>
+        <div className='grid grid-cols-3'>
+            {
+                previewData?.map(data => <SinglePreviewList key={data._id} data={data} previewData={previewData} />)
+            }
         </div>
     );
 };
