@@ -60,7 +60,7 @@ const Navbar = () => {
                             <NavLink to="/Home" className="my-1" style={({ isActive }) => isActive ? activeStyle : undefined}>Home</NavLink>
                         </li>
                         <li>
-                            <NavLink to="/Preview" className="my-1 ml-2" style={({ isActive }) => isActive ? activeStyle : undefined}>Preview</NavLink>
+                            <NavLink to="/preview-list" className="my-1 ml-2" style={({ isActive }) => isActive ? activeStyle : undefined}>Preview List</NavLink>
                         </li>
 
                     </ul>

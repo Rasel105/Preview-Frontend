@@ -7,8 +7,8 @@ const Subtitle = (props) => {
 
     return (
         <div>
-            <h1 className='text-2xl mb-3' style={{ fontFamily: setting.customCSS.fontFamily, fontSize: setting.customCSS.fontSize, textAlign: setting.customCSS.textAlign }}>Company: {setting?.customCSS.text ? setting?.customCSS.text : userData?.company}</h1>
-            <h1 className='text-2xl mb-3'>Status: {userData?.status}</h1>
+            <h1 className='text-2xl' style={{ fontFamily: setting.customCSS.fontFamily, fontSize: setting.customCSS.fontSize, textAlign: setting.customCSS.textAlign }}>Company: {setting?.customCSS.text ? setting?.customCSS.text : userData?.company}</h1>
+            <h1 className='text-2xl'>Status: {userData?.status}</h1>
         </div>
     );
 };

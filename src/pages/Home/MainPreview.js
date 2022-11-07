@@ -1,5 +1,5 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { PopupContext } from '../../App';
 import Preview from './Preview';
 import {
@@ -17,7 +17,7 @@ const MainPreview = () => {
     const [open, setOpen] = useState(1);
     const [allData, setPreviewData] = useState()
     const [user, loading, error] = useAuthState(auth);
-
+    const navigate = useNavigate();
     const email = user?.email;
 
     const handleOpen = (value) => {
@@ -39,8 +39,9 @@ const MainPreview = () => {
         }
     };
 
-    const postPreviewData = () => {
-        postPreviewSchema({ allValues, email })
+    const postPreviewData = async () => {
+        await postPreviewSchema({ allValues, email: email });
+        navigate('/preview-list')
     }
 
     console.log(allValues);
@@ -177,6 +178,7 @@ const MainPreview = () => {
                     </AccordionHeader>
                     <AccordionBody>
                         <div className='grid grid-cols-2 gap-4 mb-4'>
+
                             <div>
                                 <label htmlFor="">Color</label>
                                 <input onChange={(e) => handlePopupChange(e, "button", "color")} type="color" name="" id="" />
@@ -195,6 +197,9 @@ const MainPreview = () => {
                     <button onClick={postPreviewData} className="btn">Save</button>
                 </div>
                 <div className="card w-auto bg-base-100 shadow-xl p-5">
+                    <figure>
+                        <img src="https://placeimg.com/400/225/arch" alt="Shoes" className="rounded-xl" />
+                    </figure>
                     <div className='mb-2'>
                         {
                             allValues?.sections.map(data => <Preview allData={allData} data={data} />)
